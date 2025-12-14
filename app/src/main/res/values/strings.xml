@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Codex Playground</string>
+    <string name="create_account">Create account</string>
+    <string name="create_account_description">Set up your profile to start exploring the app.</string>
+    <string name="full_name_label">Full name</string>
+    <string name="email_label">Email address</string>
+    <string name="password_label">Password</string>
+    <string name="confirm_password_label">Confirm password</string>
+    <string name="password_mismatch_warning">Passwords do not match</string>
+    <string name="terms_agreement">I agree to the Terms of Service and Privacy Policy.</string>
+    <string name="sign_up">Sign up</string>
+    <string name="already_have_account">Already have an account? Sign in</string>
+</resources>
