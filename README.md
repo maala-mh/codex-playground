@@ -1,27 +1,26 @@
 # codex-playground
 
-## Running the Android sample locally
+A simple React Native sign-up experience that runs on both Android and iOS using the Expo tooling.
 
-### Prerequisites
-- Android Studio Jellyfish or newer with the Android SDK platform for API level 34 installed.
-- A configured Android emulator or a physical device with USB debugging enabled.
-- JDK 17 (bundled with current Android Studio releases).
-- Optional: the command-line `gradle` tool (version 8.4 or newer) if you prefer building without Android Studio.
+## Getting started
 
-### Run with Android Studio (recommended)
-1. Open the project folder (`File > Open...` and select this repository root).
-2. Let Android Studio download the Gradle wrapper and sync dependencies if prompted.
-3. Create or select an emulator, or connect a device.
-4. Click **Run** or use **Run > Run 'app'** to install and launch the sample.
-
-### Run from the command line
-1. Ensure the `ANDROID_HOME`/`ANDROID_SDK_ROOT` environment variable points to your Android SDK and that platform tools are on your `PATH`.
-2. Install Gradle 8.4+ if you do not want to use Android Studio.
-3. From the project root, build the debug APK:
+1. Install the Expo CLI if you don't have it already:
    ```bash
-   gradle assembleDebug
+   npm install --global expo-cli
    ```
-4. To install on a connected device or emulator, use:
+2. Install project dependencies:
    ```bash
-   adb install -r app/build/outputs/apk/debug/app-debug.apk
+   npm install
    ```
+
+## Running the app
+
+- **Android**: `npm run android` (launches the Expo dev server and opens an emulator or connected device).
+- **iOS (macOS only)**: `npm run ios`.
+- **Web preview**: `npm run web`.
+
+You can also run `npm start` to pick a platform interactively in the Expo Dev Tools.
+
+## Linting
+
+Run `npm run lint` to check for basic code-quality issues.
