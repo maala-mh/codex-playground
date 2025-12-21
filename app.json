@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "Codex Playground",
+    "slug": "codex-playground",
+    "scheme": "codexplayground",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
