@@ -56,7 +56,7 @@ export default function App() {
         </View>
 
         <LabeledInput
-          label="Email add"
+          label="Email address"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
