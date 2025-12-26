@@ -39,10 +39,7 @@ export default function App() {
   );
 
   const formValid =
-    fullName.trim().length > 0 &&
-    email.trim().length > 0 &&
-    passwordsMatch &&
-    agreedToTerms;
+    email.trim().length > 0 && passwordsMatch && agreedToTerms;
 
   if (isLoading) {
     return <SplashScreen />;
