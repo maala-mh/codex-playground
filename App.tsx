@@ -15,7 +15,6 @@ import {
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -36,10 +35,7 @@ export default function App() {
   );
 
   const formValid =
-    fullName.trim().length > 0 &&
-    email.trim().length > 0 &&
-    passwordsMatch &&
-    agreedToTerms;
+    email.trim().length > 0 && passwordsMatch && agreedToTerms;
 
   if (isLoading) {
     return <SplashScreen />;
@@ -58,13 +54,6 @@ export default function App() {
             Set up your profile to start exploring the app.
           </Text>
         </View>
-
-        <LabeledInput
-          label="Full name"
-          value={fullName}
-          onChangeText={setFullName}
-          autoCapitalize="words"
-        />
 
         <LabeledInput
           label="Email add"
