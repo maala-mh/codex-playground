@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import Checkbox from 'expo-checkbox';
 import {
+  ActivityIndicator,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -9,14 +10,25 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Dimensions,
 } from 'react-native';
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+
+  useEffect(() => {
+    // Simulate app initialization
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000); // Show splash for 2 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const passwordsMatch = useMemo(
     () => password.length > 0 && password === confirmPassword,
@@ -28,6 +40,10 @@ export default function App() {
     email.trim().length > 0 &&
     passwordsMatch &&
     agreedToTerms;
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -51,7 +67,7 @@ export default function App() {
         />
 
         <LabeledInput
-          label="Email address"
+          label="Email add"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -109,6 +125,80 @@ export default function App() {
   );
 }
 
+function SplashScreen() {
+  const { width, height } = Dimensions.get('window');
+  
+  // Generate random colorful logos
+  const logos = useMemo(() => {
+    const colors = [
+      '#ef4444', // red
+      '#f97316', // orange
+      '#eab308', // yellow
+      '#22c55e', // green
+      '#3b82f6', // blue
+      '#8b5cf6', // purple
+      '#ec4899', // pink
+      '#06b6d4', // cyan
+      '#f59e0b', // amber
+      '#10b981', // emerald
+    ];
+    
+    const shapes = ['circle', 'square', 'rounded'];
+    const logoCount = 15;
+    
+    return Array.from({ length: logoCount }, (_, i) => {
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const shape = shapes[Math.floor(Math.random() * shapes.length)];
+      const size = 35 + Math.random() * 40;
+      const x = Math.random() * (width - size);
+      const y = Math.random() * (height - size);
+      
+      return {
+        id: i,
+        color,
+        shape,
+        size,
+        x,
+        y,
+        rotation: Math.random() * 360,
+        borderRadius: shape === 'circle' ? size / 2 : shape === 'rounded' ? size * 0.3 : 0,
+      };
+    });
+  }, [width, height]);
+
+  return (
+    <View style={styles.splashContainer}>
+      <StatusBar style="light" />
+      {logos.map((logo) => (
+        <View
+          key={logo.id}
+          style={[
+            styles.logoShape,
+            {
+              backgroundColor: logo.color,
+              width: logo.size,
+              height: logo.size,
+              left: logo.x,
+              top: logo.y,
+              borderRadius: logo.borderRadius,
+              transform: [{ rotate: `${logo.rotation}deg` }],
+            },
+          ]}
+        />
+      ))}
+      <View style={styles.splashContent}>
+        <Text style={styles.splashTitle}>Codex Playground</Text>
+        <Text style={styles.splashSubtitle}>Welcome</Text>
+        <ActivityIndicator
+          size="large"
+          color="#fff"
+          style={styles.splashLoader}
+        />
+      </View>
+    </View>
+  );
+}
+
 interface LabeledInputProps {
   label: string;
   value: string;
@@ -158,6 +248,42 @@ function LabeledInput({
 }
 
 const styles = StyleSheet.create({
+  splashContainer: {
+    flex: 1,
+    backgroundColor: '#facc15',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  splashContent: {
+    alignItems: 'center',
+    gap: 16,
+    zIndex: 10,
+  },
+  logoShape: {
+    position: 'absolute',
+    opacity: 0.75,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  splashTitle: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#fff',
+    marginBottom: 8,
+  },
+  splashSubtitle: {
+    fontSize: 18,
+    color: '#e0e7ff',
+    marginBottom: 24,
+  },
+  splashLoader: {
+    marginTop: 8,
+  },
   safeArea: {
     flex: 1,
     backgroundColor: '#f6f7fb',
