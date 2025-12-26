@@ -13,8 +13,12 @@ import {
   Dimensions,
 } from 'react-native';
 
+type ActiveScreen = 'signup' | 'signin';
+
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
+  const [activeScreen, setActiveScreen] = useState<ActiveScreen>('signup');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -41,76 +45,25 @@ export default function App() {
     return <SplashScreen />;
   }
 
+  if (activeScreen === 'signin') {
+    return <SignInScreen onBackToSignUp={() => setActiveScreen('signup')} />;
+  }
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar style="dark" />
-      <ScrollView
-        contentContainerStyle={styles.contentContainer}
-        keyboardShouldPersistTaps="handled"
-      >
-        <View style={styles.headingContainer}>
-          <Text style={styles.title}>Create account</Text>
-          <Text style={styles.subtitle}>
-            Set up your profile to start exploring the app.
-          </Text>
-        </View>
-
-        <LabeledInput
-          label="Email address"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-
-        <LabeledInput
-          label="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-
-        <LabeledInput
-          label="Confirm password"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry
-          helperText={
-            confirmPassword.length > 0 && !passwordsMatch
-              ? 'Passwords do not match'
-              : undefined
-          }
-          helperVariant="error"
-        />
-
-        <View style={styles.divider} />
-
-        <TouchableOpacity
-          onPress={() => setAgreedToTerms(!agreedToTerms)}
-          style={styles.checkboxRow}
-          activeOpacity={0.8}
-        >
-          <Checkbox value={agreedToTerms} onValueChange={setAgreedToTerms} />
-          <Text style={styles.checkboxLabel}>
-            I agree to the Terms of Service and Privacy Policy.
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          disabled={!formValid}
-          style={[styles.primaryButton, !formValid && styles.primaryButtonDisabled]}
-          activeOpacity={0.9}
-        >
-          <Text style={[styles.primaryButtonText, !formValid && styles.disabledText]}>
-            Sign up
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.secondaryAction}>
-          <Text style={styles.secondaryActionText}>Already have an account? Sign in</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+    <SignUpScreen
+      fullName={fullName}
+      email={email}
+      password={password}
+      confirmPassword={confirmPassword}
+      agreedToTerms={agreedToTerms}
+      onFullNameChange={setFullName}
+      onEmailChange={setEmail}
+      onPasswordChange={setPassword}
+      onConfirmPasswordChange={setConfirmPassword}
+      onToggleTerms={() => setAgreedToTerms(!agreedToTerms)}
+      formValid={formValid}
+      onNavigateToSignIn={() => setActiveScreen('signin')}
+    />
   );
 }
 
@@ -197,6 +150,171 @@ interface LabeledInputProps {
   secureTextEntry?: boolean;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
+}
+
+interface SignUpScreenProps {
+  fullName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  agreedToTerms: boolean;
+  onFullNameChange: (value: string) => void;
+  onEmailChange: (value: string) => void;
+  onPasswordChange: (value: string) => void;
+  onConfirmPasswordChange: (value: string) => void;
+  onToggleTerms: () => void;
+  formValid: boolean;
+  onNavigateToSignIn: () => void;
+}
+
+function SignUpScreen({
+  fullName,
+  email,
+  password,
+  confirmPassword,
+  agreedToTerms,
+  onFullNameChange,
+  onEmailChange,
+  onPasswordChange,
+  onConfirmPasswordChange,
+  onToggleTerms,
+  formValid,
+  onNavigateToSignIn,
+}: SignUpScreenProps) {
+  const passwordsMatch = useMemo(
+    () => password.length > 0 && password === confirmPassword,
+    [password, confirmPassword],
+  );
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar style="dark" />
+      <ScrollView
+        contentContainerStyle={styles.contentContainer}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.headingContainer}>
+          <Text style={styles.title}>Create account</Text>
+          <Text style={styles.subtitle}>
+            Set up your profile to start exploring the app.
+          </Text>
+        </View>
+
+        <LabeledInput
+          label="Full name"
+          value={fullName}
+          onChangeText={onFullNameChange}
+          autoCapitalize="words"
+        />
+
+        <LabeledInput
+          label="Email add"
+          value={email}
+          onChangeText={onEmailChange}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+
+        <LabeledInput
+          label="Password"
+          value={password}
+          onChangeText={onPasswordChange}
+          secureTextEntry
+        />
+
+        <LabeledInput
+          label="Confirm password"
+          value={confirmPassword}
+          onChangeText={onConfirmPasswordChange}
+          secureTextEntry
+          helperText={
+            confirmPassword.length > 0 && !passwordsMatch
+              ? 'Passwords do not match'
+              : undefined
+          }
+          helperVariant="error"
+        />
+
+        <View style={styles.divider} />
+
+        <TouchableOpacity
+          onPress={onToggleTerms}
+          style={styles.checkboxRow}
+          activeOpacity={0.8}
+        >
+          <Checkbox value={agreedToTerms} onValueChange={onToggleTerms} />
+          <Text style={styles.checkboxLabel}>
+            I agree to the Terms of Service and Privacy Policy.
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          disabled={!formValid}
+          style={[styles.primaryButton, !formValid && styles.primaryButtonDisabled]}
+          activeOpacity={0.9}
+        >
+          <Text style={[styles.primaryButtonText, !formValid && styles.disabledText]}>
+            Sign up
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.secondaryAction} onPress={onNavigateToSignIn}>
+          <Text style={styles.secondaryActionText}>Already have an account? Sign in</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+interface SignInScreenProps {
+  onBackToSignUp: () => void;
+}
+
+function SignInScreen({ onBackToSignUp }: SignInScreenProps) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const formValid = email.trim().length > 0 && password.trim().length > 0;
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar style="dark" />
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+        <View style={styles.headingContainer}>
+          <Text style={styles.title}>Sign in</Text>
+          <Text style={styles.subtitle}>Welcome back! Sign in to continue.</Text>
+        </View>
+
+        <LabeledInput
+          label="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+
+        <LabeledInput
+          label="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+
+        <TouchableOpacity
+          disabled={!formValid}
+          style={[styles.primaryButton, !formValid && styles.primaryButtonDisabled]}
+          activeOpacity={0.9}
+        >
+          <Text style={[styles.primaryButtonText, !formValid && styles.disabledText]}>
+            Sign in
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.secondaryAction} onPress={onBackToSignUp}>
+          <Text style={styles.secondaryActionText}>Don't have an account? Sign up</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
 }
 
 function LabeledInput({
